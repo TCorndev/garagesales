@@ -1,4 +1,5 @@
 using garagesales.Models;
+using garagesales.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,18 +8,18 @@ namespace garagesales.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly GarageSalesService _service;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, GarageSalesService service)
         {
             _logger = logger;
-            _configuration = configuration;
+            _service = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            Console.WriteLine(_configuration.GetConnectionString("Default"));
-            return View();
+            var sales = await _service.GetGarageSales();
+            return View(sales);
         }
 
         public IActionResult Privacy()

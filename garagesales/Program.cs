@@ -1,8 +1,12 @@
+using garagesales.Models;
+using garagesales.Services;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Console.WriteLine(builder.Configuration.GetConnectionString("GarageSaleDatabase"));
+var connectionstring = builder.Configuration.GetConnectionString("GarageSaleDatabase");
 
 try
 {
@@ -18,6 +22,8 @@ catch (Exception ex)
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<Database1Context>(options => options.UseSqlServer(connectionstring));
+builder.Services.AddHttpClient<GarageSalesService>(client => client.BaseAddress = new Uri("https://localhost:44332/")); 
 
 var app = builder.Build();
 
