@@ -1,4 +1,6 @@
 ﻿using garagesales.Models;
+using garagesales.Models.dto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace garagesales.Services
 {
@@ -18,6 +20,11 @@ namespace garagesales.Services
         public async Task<GarageSale> GetGarageSale(int id)
         {
             return await _httpClient.GetFromJsonAsync<GarageSale>($"api/GarageSales/{id}") ?? new GarageSale();
+        }
+        public async Task CreateGarageSale(GarageSaleDto dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/GarageSales", dto);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
