@@ -26,5 +26,9 @@ namespace garagesales.Services
             var response = await _httpClient.PostAsJsonAsync("api/GarageSales", dto);
             response.EnsureSuccessStatusCode();
         }
+        public async Task<List<GarageSaleItem>> GetGarageSaleItems(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<List<GarageSaleItem>>($"api/GarageSaleItems/{id}") ?? new List<GarageSaleItem>();
+        }
     }
 }

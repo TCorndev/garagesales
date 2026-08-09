@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace garagesales.Models;
 
@@ -15,5 +16,6 @@ public partial class GarageSaleItem
 
     public decimal Price { get; set; }
 
+    [JsonIgnore]
     public virtual GarageSale GarageSale { get; set; } = null!;
 }

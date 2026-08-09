@@ -2,6 +2,7 @@
 using garagesales.Models.dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace garagesales.Controllers.API
 {
@@ -19,8 +20,7 @@ namespace garagesales.Controllers.API
         [HttpGet]
         public IActionResult GetGarageSales()
         {
-            var sales = dbContext.GarageSales.ToList();
-
+            var sales = dbContext.GarageSales.Include(x => x.GarageSaleItems).ToList();
             return Ok(sales);
         }
         [HttpGet("{id}")]
