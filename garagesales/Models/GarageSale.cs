@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace garagesales.Models;
@@ -6,7 +7,7 @@ namespace garagesales.Models;
 public partial class GarageSale
 {
     public int Id { get; set; }
-
+    public string? UserId { get; set; }
     public string Name { get; set; } = null!;
 
     public string Description { get; set; } = null!;
@@ -26,4 +27,5 @@ public partial class GarageSale
     public DateTime CreatedAt { get; set; }
 
     public virtual ICollection<GarageSaleItem> GarageSaleItems { get; set; } = new List<GarageSaleItem>();
+    public virtual IdentityUser? User { get; set; }
 }

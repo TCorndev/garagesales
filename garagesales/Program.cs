@@ -1,29 +1,20 @@
 using garagesales.Models;
 using garagesales.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Console.WriteLine(builder.Configuration.GetConnectionString("GarageSaleDatabase"));
 var connectionstring = builder.Configuration.GetConnectionString("GarageSaleDatabase");
-
-try
-{
-    using var connection = new SqlConnection(builder.Configuration.GetConnectionString("GarageSaleDatabase"));
-    connection.Open();
-
-    Console.WriteLine("Success");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error: {ex}");
-}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<Database1Context>(options => options.UseSqlServer(connectionstring));
-builder.Services.AddHttpClient<GarageSalesService>(client => client.BaseAddress = new Uri("https://localhost:44332/")); 
+builder.Services.AddHttpClient<GarageSalesService>(client => client.BaseAddress = new Uri("https://localhost:44332/"));
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<Database1Context>();
 
 var app = builder.Build();
 

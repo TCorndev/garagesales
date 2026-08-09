@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace garagesales.Models;
 
-public partial class Database1Context : DbContext
+public partial class Database1Context : IdentityDbContext<IdentityUser>
 {
     public Database1Context()
     {
@@ -19,11 +21,10 @@ public partial class Database1Context : DbContext
 
     public virtual DbSet<GarageSaleItem> GarageSaleItems { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:GarageSaleDatabase");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<GarageSale>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__GarageSa__3214EC0700C9EDE1");
@@ -47,6 +48,9 @@ public partial class Database1Context : DbContext
             entity.Property(e => e.ZipCode)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+            entity.HasOne(e => e.User).WithMany().
+                HasForeignKey(e => e.UserId).
+                OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<GarageSaleItem>(entity =>
