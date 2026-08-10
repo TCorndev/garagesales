@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace garagesales.Controllers.API
 {
@@ -28,7 +29,7 @@ namespace garagesales.Controllers.API
         [HttpGet("{id}")]
         public IActionResult GetGarageSale(int id)
         {
-            var sale = _dbContext.GarageSales.Find(id);
+            var sale = _dbContext.GarageSales.Include(x => x.GarageSaleItems).FirstOrDefault(x => x.Id == id);
 
             if (sale == null)
             {
@@ -53,6 +54,20 @@ namespace garagesales.Controllers.API
             };
 
             _dbContext.GarageSales.Add(sale);
+            _dbContext.SaveChanges();
+            return Ok(sale);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteGarageSale(int id)
+        {
+            var sale = _dbContext.GarageSales.Find(id);
+            if (sale == null) 
+            {
+                return NotFound();
+            }
+            var items = _dbContext.GarageSaleItems.Where(x => x.GarageSaleId == id);
+            _dbContext.GarageSaleItems.RemoveRange(items);
+            _dbContext.GarageSales.Remove(sale);
             _dbContext.SaveChanges();
             return Ok(sale);
         }

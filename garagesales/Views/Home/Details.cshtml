@@ -3,11 +3,21 @@
 @model GarageSale
 @{
     var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var role = User.FindFirstValue(ClaimTypes.Role);
+
 }
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-9">
-
+            @if (Model.UserId == userid || role == "Admin")
+            {
+                <div class="text-center mb-3">
+                    <a asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                        <i class="fa-solid fa-trash me-1"></i>
+                        Delete Garage Sale
+                    </a>
+                </div>
+            }
             <!-- Garage Sale Details -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
@@ -82,13 +92,13 @@
                         <div class="text-center py-4">
                             <p class="text-muted mb-0">
                                 No items have been added to this garage sale yet.
-                                @if(Model.UserId == userid)
-                                {
-                                    <i onclick="addItem(@Model.Id)" style="cursor: pointer;" class="fa-solid fa-circle-plus text-success fs-3"></i>
-                                }
                             </p>
                         </div>
                     }
+                        @if (Model.UserId == userid)
+                        {
+                            <i onclick="addItem(@Model.Id)" style="cursor: pointer;" class="fa-solid fa-circle-plus text-success fs-3"></i>
+                        }
                     </div>
                 </div>
             </div>

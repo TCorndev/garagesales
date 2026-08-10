@@ -1,5 +1,7 @@
 ﻿using garagesales.Models;
+using garagesales.Models.dto;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,18 +11,32 @@ namespace garagesales.Controllers.API
     [ApiController]
     public class GarageSaleItemsController : ControllerBase
     {
-        private readonly Database1Context dbContext;
+        private readonly Database1Context _dbContext;
 
         public GarageSaleItemsController(Database1Context dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetGarageSaleItems(int id) 
         {
-            var items = await dbContext.GarageSaleItems.Where(x => x.GarageSaleId == id).ToListAsync();
+            var items = await _dbContext.GarageSaleItems.Where(x => x.GarageSaleId == id).ToListAsync();
             return Ok(items);
+        }
+        [HttpPost]
+        public  IActionResult CreateGarageSaleItem(GarageSaleItemDto dto)
+        {
+            var item = new GarageSaleItem
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                GarageSaleId = dto.GarageSaleId,
+            };
+            _dbContext.GarageSaleItems.Add(item);
+            _dbContext.SaveChanges();
+            return Ok();
         }
     }
 }

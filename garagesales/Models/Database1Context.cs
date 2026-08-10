@@ -69,7 +69,7 @@ public partial class Database1Context : IdentityDbContext<IdentityUser>
 
             entity.HasOne(d => d.GarageSale).WithMany(p => p.GarageSaleItems)
                 .HasForeignKey(d => d.GarageSaleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__GarageSal__Garag__398D8EEE");
         });
 

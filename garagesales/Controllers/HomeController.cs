@@ -4,6 +4,8 @@ using garagesales.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace garagesales.Controllers
 {
@@ -46,9 +48,28 @@ namespace garagesales.Controllers
             return PartialView("_additem", dto);
         }
         [HttpPost]
-        public IActionResult AddItem(GarageSaleItemDto item)
+        public async Task<IActionResult> AddItem(GarageSaleItemDto item)
         {
+            await _service.CreateGarageSaleItem(item);
             return RedirectToAction("Details", new { id = item.GarageSaleId });
+        }
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            //Admin bypasses the need to check if sale belongs to user
+            if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+            {
+                await _service.DeleteGarageSale(id);
+            }
+            else
+            {
+                var sale = await _service.GetGarageSale(id);
+                if (sale.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    await _service.DeleteGarageSale(id);
+                }
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Privacy()

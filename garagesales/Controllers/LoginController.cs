@@ -14,23 +14,24 @@ namespace garagesales.Controllers
         public LoginController(LoginService service) { 
             _service = service;
         }
-        public IActionResult Index(bool error = false)
+        public IActionResult Index(bool error = false, string? message = null)
         {
             if (User.Identity?.IsAuthenticated == true)
             {
                 return View("Logout", User.Identity.Name);
             }
             ViewBag.Error = error;
+            ViewBag.Message = message;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginDto dto, string? error)
         {
             var response = await _service.Login(dto);
             if(response == null)
             {
-                return RedirectToAction("Index", "Login", new { error = true });
+                return RedirectToAction("Index", "Login", new { error = true, message = "Invalid Login Credentials" });
             }
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, response.Username), new Claim(ClaimTypes.Role, response.Role), new Claim(ClaimTypes.NameIdentifier, response.UserId) };
             var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
@@ -43,18 +44,25 @@ namespace garagesales.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<string> CreateUser(UserDto dto)
+        public async Task<IActionResult> CreateUser(UserDto dto)
         {
             if (!ModelState.IsValid)
             {
-                return "Model state not valid";
+                return RedirectToAction("Index", new { error = true, message = "Something went wrong, please try again" });
             }
             if (dto.Password != dto.Confirm)
             {
-                return "Passwords don't match";
+                return RedirectToAction("Index", new { error = true, message = "Passwords don't match, please try registering again" });
             }
-            await _service.RegisterUser(dto);
-            return "You did it?";
+            try
+            {
+                await _service.RegisterUser(dto);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return RedirectToAction("Index", new { error = true, message = "Password isn't strong enough. Password must have a length of at least 6, uppercase and lowercase letters, one number, and one special character" });
+            }
         }
         [HttpPost]
         public async Task<IActionResult> Logout()

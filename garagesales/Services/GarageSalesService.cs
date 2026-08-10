@@ -26,9 +26,22 @@ namespace garagesales.Services
             var response = await _httpClient.PostAsJsonAsync("api/GarageSales", dto);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task DeleteGarageSale(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/GarageSales/{id}");
+            response.EnsureSuccessStatusCode();
+        }
+
+        //Might not be used, delete?
         public async Task<List<GarageSaleItem>> GetGarageSaleItems(int id)
         {
             return await _httpClient.GetFromJsonAsync<List<GarageSaleItem>>($"api/GarageSaleItems/{id}") ?? new List<GarageSaleItem>();
+        }
+        public async Task CreateGarageSaleItem(GarageSaleItemDto dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/GarageSaleItems", dto);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

@@ -1,0 +1,41 @@
+﻿@using garagesales.Models.dto
+@model List<GarageSale>
+
+<div class="row g-4">
+    @foreach (var sale in Model)
+    {
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@sale.Name</h5>
+
+                    <p class="card-text mb-1">
+                        <strong>Address:</strong> @sale.Address
+                    </p>
+
+                    <p class="card-text mb-3">
+                        <strong>Starts:</strong> @sale.StartTime.ToString("g")
+                    </p>
+
+                    <h6>Items</h6>
+
+                    @if (sale.GarageSaleItems != null && sale.GarageSaleItems.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in sale.GarageSaleItems)
+                            {
+                                <li class="list-group-item px-0">
+                                    @item.Name
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No items listed yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
