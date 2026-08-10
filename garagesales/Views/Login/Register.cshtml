@@ -1,0 +1,38 @@
+﻿@using garagesales.Models.dto
+@model UserDto
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Create Your Account</h2>
+
+                    <form asp-controller="Login" asp-action="CreateUser" method="post">
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username </label>
+                            <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm" class="form-label">Confirm Password</label>
+                            <input type="password" id="confirm" name="confirm" class="form-control" placeholder="Confirm your password" required />
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Register</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

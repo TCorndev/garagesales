@@ -10,23 +10,23 @@ namespace garagesales.Controllers.API
     [ApiController]
     public class GarageSalesController : ControllerBase
     {
-        private readonly Database1Context dbContext;
+        private readonly Database1Context _dbContext;
 
         public GarageSalesController(Database1Context dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
         public IActionResult GetGarageSales()
         {
-            var sales = dbContext.GarageSales.Include(x => x.GarageSaleItems).ToList();
+            var sales = _dbContext.GarageSales.Include(x => x.GarageSaleItems).ToList();
             return Ok(sales);
         }
         [HttpGet("{id}")]
         public IActionResult GetGarageSale(int id)
         {
-            var sale = dbContext.GarageSales.Find(id);
+            var sale = _dbContext.GarageSales.Find(id);
 
             if (sale == null)
             {
@@ -49,8 +49,8 @@ namespace garagesales.Controllers.API
                 EndTime = dto.EndTime,
             };
 
-            dbContext.GarageSales.Add(sale);
-            dbContext.SaveChanges();
+            _dbContext.GarageSales.Add(sale);
+            _dbContext.SaveChanges();
             return Ok(sale);
         }
     }
