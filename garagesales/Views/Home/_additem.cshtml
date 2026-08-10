@@ -25,4 +25,5 @@
     <input asp-for="GarageSaleId" type="hidden" value="@Model.GarageSaleId" required/>
 
     <button type="submit" class="btn btn-success">Add Item</button>
+    <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.GarageSaleId" class="btn btn-secondary">Cancel</a>
 </form>

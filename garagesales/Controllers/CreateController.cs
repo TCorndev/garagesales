@@ -21,22 +21,22 @@ namespace garagesales.Controllers
             return View();
         }
         [Authorize]
-        public async Task<string> Create(GarageSaleDto dto)
+        public async Task<IActionResult> Create(GarageSaleDto dto)
         {
             string? userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!ModelState.IsValid || userid == null)
             {
-                return ":(";
+                return RedirectToAction("Index");
             }
             dto.UserId = userid;
             try
             {
-                await _service.CreateGarageSale(dto);
+                int id = await _service.CreateGarageSale(dto);
+                return RedirectToAction("Details", "Home", new {id = id});
             }
             catch (Exception ex) {
-                return ex.Message; //update this later
+                return RedirectToAction("Index"); //update this later
             }
-            return "You did it";
         }
     }
 }

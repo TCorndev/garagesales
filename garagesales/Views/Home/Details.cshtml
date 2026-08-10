@@ -67,7 +67,11 @@
                             {
                                 <div class="col-md-6">
                                     <div class="card h-100 border">
-                                        <div class="card-body">
+                                        <div class="card-body position-relative">
+                                                @if (Model.UserId == userid || role == "Admin")
+                                                {   
+                                                <a asp-controller="Home" asp-action="DeleteItem" asp-route-saleid="@Model.Id" asp-route-itemid="@item.Id" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"> <i class="fa-solid fa-trash"></i> </a>
+                                                }
                                             <h5 class="card-title">
                                                 @item.Name
                                             </h5>

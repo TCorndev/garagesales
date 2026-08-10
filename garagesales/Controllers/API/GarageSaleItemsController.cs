@@ -38,5 +38,17 @@ namespace garagesales.Controllers.API
             _dbContext.SaveChanges();
             return Ok();
         }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteGarageSaleItem(int id)
+        {
+            var item = _dbContext.GarageSaleItems.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            _dbContext.GarageSaleItems.Remove(item);
+            _dbContext.SaveChanges();
+            return Ok(item);
+        }
     }
 }

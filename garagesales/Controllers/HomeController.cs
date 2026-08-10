@@ -54,6 +54,24 @@ namespace garagesales.Controllers
             return RedirectToAction("Details", new { id = item.GarageSaleId });
         }
         [Authorize]
+        public async Task<IActionResult> DeleteItem(int saleid, int itemid)
+        {
+            //Admin bypasses the need to check if sale belongs to user
+            if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+            {
+                await _service.DeleteGarageSaleItem(itemid);
+            }
+            else
+            {
+                var sale = await _service.GetGarageSale(saleid);
+                if (sale.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    await _service.DeleteGarageSaleItem(itemid);
+                }
+            }
+            return RedirectToAction("Details", new { id = saleid });
+        }
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             //Admin bypasses the need to check if sale belongs to user
