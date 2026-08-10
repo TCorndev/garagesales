@@ -49,6 +49,7 @@
                 </div>
 
                 <div class="card-body">
+                    <div id="inventory">
                     @if (Model.GarageSaleItems != null && Model.GarageSaleItems.Any())
                     {
                         <div class="row g-3">
@@ -83,11 +84,12 @@
                                 No items have been added to this garage sale yet.
                                 @if(Model.UserId == userid)
                                 {
-                                    <p> Can you see this?</p>
+                                    <i onclick="addItem(@Model.Id)" style="cursor: pointer;" class="fa-solid fa-circle-plus text-success fs-3"></i>
                                 }
                             </p>
                         </div>
                     }
+                    </div>
                 </div>
             </div>
 
@@ -99,4 +101,12 @@
         </div>
     </div>
 </div>
-```
+<script>
+    function addItem(saleid){
+        console.log(saleid)
+        $.get("/Home/AddItem", {saleid: saleid}, 
+        function (html) {
+            $("#inventory").html(html)
+        })
+    }
+</script>

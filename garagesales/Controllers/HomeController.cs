@@ -1,5 +1,7 @@
 using garagesales.Models;
+using garagesales.Models.dto;
 using garagesales.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -33,6 +35,20 @@ namespace garagesales.Controllers
             {
                 return RedirectToAction("Index", "Home");//Update to error eventually
             }
+        }
+        [Authorize]
+        public IActionResult AddItem(int saleid)
+        {
+            var dto = new GarageSaleItemDto
+            {
+                GarageSaleId = saleid
+            };
+            return PartialView("_additem", dto);
+        }
+        [HttpPost]
+        public IActionResult AddItem(GarageSaleItemDto item)
+        {
+            return RedirectToAction("Details", new { id = item.GarageSaleId });
         }
 
         public IActionResult Privacy()
