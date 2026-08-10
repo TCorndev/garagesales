@@ -22,6 +22,19 @@ namespace garagesales.Controllers
             return View(sales);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            try
+            {
+                var sale = await _service.GetGarageSale(id);
+                return View(sale);
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Home");//Update to error eventually
+            }
+        }
+
         public IActionResult Privacy()
         {
             return View();

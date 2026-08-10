@@ -10,7 +10,7 @@
 
     @foreach (var sale in Model)
     {
-        <h1>@sale.Name</h1>
+        <h1><a asp-controller="Home" asp-action="Details" asp-route-id="@sale.Id">@sale.Name</a></h1>
     }
     <partial name="_partial" />
 </div>

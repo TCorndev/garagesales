@@ -27,12 +27,20 @@ namespace garagesales.Controllers.API
             {
                 return Unauthorized();
             }
-            var roles = await _userManager.GetRolesAsync(await _userManager.FindByNameAsync(dto.Username));
+
+            var user = await _userManager.FindByNameAsync(dto.Username);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault();
+            var id = await _userManager.GetUserIdAsync(user);
             return Ok(new
             {
                 Username = dto.Username,
-                Role = role
+                Role = role,
+                UserId = id
             });
         }
 

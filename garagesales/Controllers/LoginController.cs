@@ -14,23 +14,29 @@ namespace garagesales.Controllers
         public LoginController(LoginService service) { 
             _service = service;
         }
-        public IActionResult Index()
+        public IActionResult Index(bool error = false)
         {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return View("Logout", User.Identity.Name);
+            }
+            ViewBag.Error = error;
             return View();
         }
+
         [HttpPost]
-        public async Task<string> Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
             var response = await _service.Login(dto);
             if(response == null)
             {
-                return "Login failed";
+                return RedirectToAction("Index", "Login", new { error = true });
             }
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, response.Username), new Claim(ClaimTypes.Role, response.Role) };
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, response.Username), new Claim(ClaimTypes.Role, response.Role), new Claim(ClaimTypes.NameIdentifier, response.UserId) };
             var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
-            return $"You are logged in! :D {User.Identity.Name}";
+            return RedirectToAction("Index", "Home");
         }
         public IActionResult Register()
         {
@@ -49,6 +55,12 @@ namespace garagesales.Controllers
             }
             await _service.RegisterUser(dto);
             return "You did it?";
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            return RedirectToAction("Index", "Login");
         }
     }
 }

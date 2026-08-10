@@ -1,0 +1,26 @@
+﻿@model string
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">You are already logged in as @Model</h2>
+
+                    <form asp-controller="Login" asp-action="Logout" method="post">
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger">Logout</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

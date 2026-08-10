@@ -13,9 +13,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<Database1Context>(options => options.UseSqlServer(connectionstring));
 builder.Services.AddHttpClient<GarageSalesService>(client => client.BaseAddress = new Uri("https://localhost:44332/"));
 builder.Services.AddHttpClient<LoginService>(client => client.BaseAddress = new Uri("https://localhost:44332/"));
+builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<Database1Context>().AddSignInManager();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
-builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<Database1Context>().AddSignInManager();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+    options.LogoutPath = "/Login";
+});
 
 var app = builder.Build();
 

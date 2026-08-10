@@ -1,8 +1,10 @@
 ﻿using garagesales.Models;
 using garagesales.Models.dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace garagesales.Controllers.API
 {
@@ -47,6 +49,7 @@ namespace garagesales.Controllers.API
                 ZipCode = dto.ZipCode,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
+                UserId = dto.UserId,
             };
 
             _dbContext.GarageSales.Add(sale);
