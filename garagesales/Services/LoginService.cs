@@ -1,4 +1,5 @@
 ﻿using garagesales.Models.dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,12 +8,14 @@ namespace garagesales.Services
     public class LoginService
     {
         private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAcessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoginService(HttpClient httpClient, IHttpContextAccessor httpContextAcessor)
+        public LoginService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
-            _httpContextAcessor = httpContextAcessor;
+            _httpContextAccessor = httpContextAccessor;
+            var request = httpContextAccessor.HttpContext!.Request;
+            _httpClient.BaseAddress = new Uri($"{request.Scheme}://{request.Host}/");
         }
 
         public async Task<LoginResponseDto> Login(LoginDto dto)
@@ -55,7 +58,7 @@ namespace garagesales.Services
         public void AddCookie()
         {
             _httpClient.DefaultRequestHeaders.Remove("Cookie");
-            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", _httpContextAcessor.HttpContext?.Request.Headers.Cookie.ToString());
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", _httpContextAccessor.HttpContext?.Request.Headers.Cookie.ToString());
         }
     }
 }

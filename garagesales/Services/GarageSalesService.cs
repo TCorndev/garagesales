@@ -8,12 +8,15 @@ namespace garagesales.Services
     public class GarageSalesService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GarageSalesService(HttpClient httpClient)
+        public GarageSalesService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            _httpContextAccessor = httpContextAccessor;
+            var request = httpContextAccessor.HttpContext!.Request;
+            _httpClient.BaseAddress = new Uri($"{request.Scheme}://{request.Host}/");
         }
-
         public async Task<List<GarageSale>> GetGarageSales(SaleFilterDto dto)
         {
             var query = new Dictionary<string, string>();

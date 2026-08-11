@@ -23,7 +23,7 @@ namespace garagesales.Controllers.API
         [HttpGet]
         public IActionResult GetGarageSales(string? City = null, string? State = null, DateTime? StartDate = null)
         {
-            var query = _dbContext.GarageSales.AsQueryable();
+            var query = _dbContext.GarageSales.Include(x => x.GarageSaleItems).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(City))
             {
