@@ -24,8 +24,14 @@ namespace garagesales.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var sales = await _saleservice.GetGarageSales();
-            return View(sales);
+            var filters = await _saleservice.GetFilters();
+            return View(filters);
+        }
+
+        public async Task<IActionResult> GarageSaleList(SaleFilterDto? filter)
+        {
+            var sales = await _saleservice.GetGarageSales(filter);
+            return PartialView("_garagesalelist", sales);
         }
 
         public async Task<IActionResult> Details(int id)

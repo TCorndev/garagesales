@@ -1,6 +1,7 @@
 ﻿using garagesales.Models;
 using garagesales.Models.dto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace garagesales.Services
 {
@@ -13,9 +14,27 @@ namespace garagesales.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<GarageSale>> GetGarageSales()
+        public async Task<List<GarageSale>> GetGarageSales(SaleFilterDto dto)
         {
-            return await _httpClient.GetFromJsonAsync<List<GarageSale>>("api/GarageSales") ?? new List<GarageSale>();
+            var query = new Dictionary<string, string>();
+            if (!string.IsNullOrWhiteSpace(dto.City))
+            {
+                query["City"] = dto.City;
+            }
+            if (!string.IsNullOrWhiteSpace(dto.State))
+            {
+                query["State"] = dto.State;
+            }
+            if (dto.StartDate.HasValue)
+            {
+                query["StartDate"] = dto.StartDate.Value.ToString("yyyy-MM-dd");
+            }
+            var url = QueryHelpers.AddQueryString("api/GarageSales", query);
+            return await _httpClient.GetFromJsonAsync<List<GarageSale>>(url) ?? new List<GarageSale>();
+        }
+        public async Task<FilterModel> GetFilters()
+        {
+            return await _httpClient.GetFromJsonAsync<FilterModel>("api/GarageSales/filters") ?? new FilterModel();
         }
         public async Task<GarageSale> GetGarageSale(int id)
         {

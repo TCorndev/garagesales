@@ -21,11 +21,26 @@ namespace garagesales.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetGarageSales()
+        public IActionResult GetGarageSales(string? City = null, string? State = null, DateTime? StartDate = null)
         {
-            var sales = _dbContext.GarageSales.Include(x => x.GarageSaleItems).ToList();
+            var query = _dbContext.GarageSales.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(City))
+            {
+                query = query.Where(x => x.City == City);
+            }
+            if (!string.IsNullOrWhiteSpace(State))
+            {
+                query = query.Where(x => x.State == State);
+            }
+            if (StartDate.HasValue)
+            {
+                query = query.Where(x => x.StartTime > StartDate.Value);
+            }
+            var sales = query.ToList();
             return Ok(sales);
         }
+
         [HttpGet("{id}")]
         public IActionResult GetGarageSale(int id)
         {
@@ -42,6 +57,16 @@ namespace garagesales.Controllers.API
         {
             var sales = _dbContext.GarageSales.Where(x => x.UserId == id).ToList();
             return Ok(sales);
+        }
+        [HttpGet("filters")]
+        public IActionResult GetFilters()
+        {
+            FilterModel model = new FilterModel 
+            {
+                Cities = _dbContext.GarageSales.Select(x => x.City).Distinct().ToList(),
+                States = _dbContext.GarageSales.Select(x => x.State).Distinct().ToList(),
+            };
+            return Ok(model);
         }
         [HttpPost]
         public IActionResult AddGarageSale(GarageSaleDto dto)
