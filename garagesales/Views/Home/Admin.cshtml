@@ -1,0 +1,66 @@
+﻿@using System.Security.Claims
+@using garagesales.Models.dto
+@model List<UserDto>
+@{
+    var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">Users</h3>
+                </div>
+
+                <div class="list-group list-group-flush userlist">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var user in Model.OrderBy(x => x.Name))
+                        {
+                            <div class="list-group-item py-3 d-flex justify-content-between align-items-center">
+
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (userid != user.Id)
+                                    {   
+                                        <a asp-controller="Home" asp-action="DeleteUser" asp-route-id="@user.Id" class="btn btn-sm btn-outline-danger"> <i class="fa-solid fa-trash"></i> </a>
+                                    }
+                                    <span class="fw-semibold">
+                                        @user.Name
+                                    </span>
+
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (userid != user.Id)
+                                    {
+                                        @if (user.Role == "Admin")
+                                        {
+                                            <a asp-controller="Home" asp-action="UpdateRole" asp-route-id="@user.Id" asp-route-role="User" class="btn btn-sm btn-secondary"> Make User </a>
+                                            <span class="badge bg-warning"> @user.Role </span>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Home" asp-action="UpdateRole" asp-route-id="@user.Id" asp-route-role="Admin" class="btn btn-sm btn-warning"> Make Admin </a>
+                                            <span class="badge bg-secondary"> @user.Role </span>
+                                        }
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="list-group-item text-center text-muted py-4">
+                            No users found.
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

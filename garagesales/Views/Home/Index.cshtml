@@ -1,8 +1,69 @@
-﻿@{
+﻿@using garagesales.Models
+@model FilterModel
+@{
     ViewData["Title"] = "Home Page";
 }
+<div class="mb-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+                <div class="col-md-4">
+                    <label for="city" class="form-label">City</label>
+                    <select id="city" name="city" class="form-select">
+                        <option value="">All Cities</option>
+                        @foreach (var city in Model.Cities)
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="state" class="form-label">State</label>
+                    <select id="state" name="state" class="form-select">
+                        <option value="">All States</option>
+                        @foreach (var state in Model.States)
+                        {
+                            <option value="@state">@state</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check mb-2">
+                        <input type="checkbox" id="upcomingOnly" name="upcomingOnly" value="true" class="form-check-input" />
+                        <label for="upcomingOnly" class="form-check-label">
+                            Hide sales that have already started
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div id="garagesalelist">
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(loadGarageSales)
+        $('#city').on("change", loadGarageSales)
+        $('#state').on("change", loadGarageSales)
+        $('#upcomingOnly').on("change", loadGarageSales)
+
+        function loadGarageSales() {
+            var City = $('#city').val()
+            var State = $('#state').val()
+            var StartDate = null
+            if ($('#upcomingOnly').is(":checked")){
+                StartDate = new Date().toISOString()
+            }
+
+            $.get("/Home/GarageSaleList", {City, State, StartDate}, function (html) {
+                $("#garagesalelist").html(html)
+            })
+        }
+    </script>
+}
