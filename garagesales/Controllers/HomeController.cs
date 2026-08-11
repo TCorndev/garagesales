@@ -27,13 +27,14 @@ namespace garagesales.Controllers
             var filters = await _saleservice.GetFilters();
             return View(filters);
         }
-
+        // Calls partial view with selected filters in place
         public async Task<IActionResult> GarageSaleList(SaleFilterDto? filter)
         {
             var sales = await _saleservice.GetGarageSales(filter);
             return PartialView("_garagesalelist", sales);
         }
 
+        //The Details page
         public async Task<IActionResult> Details(int id)
         {
             try
@@ -46,8 +47,8 @@ namespace garagesales.Controllers
                 return RedirectToAction("Index", "Home");//Update to error eventually
             }
         }
-        [Authorize]
-        public IActionResult AddItem(int saleid)
+        //Returns the partial view associated with adding items to the garagesale
+        public async Task<IActionResult> AddItem(int saleid)
         {
             var dto = new GarageSaleItemDto
             {
@@ -55,10 +56,16 @@ namespace garagesales.Controllers
             };
             return PartialView("_additem", dto);
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddItem(GarageSaleItemDto item)
         {
-            await _saleservice.CreateGarageSaleItem(item);
+            //Checks to make sure sale belongs to the user before adding the item
+            var sale = await _saleservice.GetGarageSale(item.GarageSaleId);
+            if (sale.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                await _saleservice.CreateGarageSaleItem(item);
+            }
             return RedirectToAction("Details", new { id = item.GarageSaleId });
         }
         [Authorize]
@@ -98,12 +105,14 @@ namespace garagesales.Controllers
             return RedirectToAction("Index", "Home");
         }
         [Authorize(Roles = "Admin")]
+        //The Admin page, pulls users too
         public async Task<IActionResult> Admin()
         {
             return View(await _loginservice.GetUsers());
         }
 
         [Authorize(Roles = "Admin")]
+        //Creates a user DTO based on provided parameters. Name is not used
         public async Task<IActionResult> UpdateRole(string id, string role)
         {
             UserDto update = new UserDto
@@ -117,6 +126,7 @@ namespace garagesales.Controllers
             return RedirectToAction("Admin", "Home");
         }
         [Authorize(Roles = "Admin")]
+        //Deletes user, but first deletes any garage sales associated with that user
         public async Task<IActionResult> DeleteUser(string id)
         {
             var usersales = await _saleservice.GetUserGarageSales(id);

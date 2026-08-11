@@ -16,11 +16,14 @@ namespace garagesales.Controllers
             _service = service;
         }
         [Authorize]
+        //Returns the create page, requires authorization
         public IActionResult Index()
         {
             return View();
         }
         [Authorize]
+        [HttpPost]
+        //Creates a new garage sale for the logged in user
         public async Task<IActionResult> Create(GarageSaleDto dto)
         {
             string? userid = User.FindFirstValue(ClaimTypes.NameIdentifier);

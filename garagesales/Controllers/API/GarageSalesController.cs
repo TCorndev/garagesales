@@ -21,6 +21,7 @@ namespace garagesales.Controllers.API
         }
 
         [HttpGet]
+        //Gets all Garage Sales with optional filters
         public IActionResult GetGarageSales(string? City = null, string? State = null, DateTime? StartDate = null)
         {
             var query = _dbContext.GarageSales.Include(x => x.GarageSaleItems).AsQueryable();
@@ -42,6 +43,7 @@ namespace garagesales.Controllers.API
         }
 
         [HttpGet("{id}")]
+        //Gets Specific Garage Sale
         public IActionResult GetGarageSale(int id)
         {
             var sale = _dbContext.GarageSales.Include(x => x.GarageSaleItems).FirstOrDefault(x => x.Id == id);
@@ -53,12 +55,14 @@ namespace garagesales.Controllers.API
             return Ok(sale);
         }
         [HttpGet("User/{id}")]
+        //Gets all Garage Sales associated with a specific User
         public IActionResult GetGarageSale(string id)
         {
             var sales = _dbContext.GarageSales.Where(x => x.UserId == id).ToList();
             return Ok(sales);
         }
         [HttpGet("filters")]
+        //Gets all existing Cities and States to be used as filters
         public IActionResult GetFilters()
         {
             FilterModel model = new FilterModel 
@@ -69,6 +73,7 @@ namespace garagesales.Controllers.API
             return Ok(model);
         }
         [HttpPost]
+        //Adds a Garage Sale by creating a new one based on the dto's parameters
         public IActionResult AddGarageSale(GarageSaleDto dto)
         {
             var sale = new GarageSale()
@@ -89,6 +94,7 @@ namespace garagesales.Controllers.API
             return Ok(sale);
         }
         [HttpDelete("{id}")]
+        //Deletes a specific garage sale, also deletes any items associated with that garage sale first
         public IActionResult DeleteGarageSale(int id)
         {
             var sale = _dbContext.GarageSales.Find(id);

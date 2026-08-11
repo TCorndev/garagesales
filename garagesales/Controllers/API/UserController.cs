@@ -22,6 +22,7 @@ namespace garagesales.Controllers.API
         }
         [Authorize(Roles = "Admin")]
         [HttpGet]
+        //Gets a list of all users for the admin page
         public async Task<IActionResult> GetUsers()
         {
             var userlist = await _userManager.Users.ToListAsync();
@@ -38,6 +39,7 @@ namespace garagesales.Controllers.API
             return Ok(dtolist);
         }
         [HttpPost]
+        //Logins with the parameters from the dto
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var result = await _signInManager.PasswordSignInAsync(dto.Username, dto.Password, false, false);
@@ -64,6 +66,7 @@ namespace garagesales.Controllers.API
         }
 
         [HttpPost("register")]
+        //Registers a new user with the parameters in the dto
         public async Task<IActionResult> RegisterUser(CreateUserDto dto)
         {
             var newuser = new IdentityUser();
@@ -77,6 +80,7 @@ namespace garagesales.Controllers.API
         }
         [Authorize(Roles = "Admin")]
         [HttpPut]
+        //Updates a user to be an Admin or a User, based on what they were before
         public async Task<IActionResult> UpdateUser(UserDto dto)
         {
             string removedrole = "User";
@@ -94,6 +98,7 @@ namespace garagesales.Controllers.API
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
+        //Deletes a User
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

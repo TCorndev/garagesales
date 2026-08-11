@@ -10,6 +10,7 @@ namespace garagesales.Services
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        //http client's base address is set in the constructor
         public GarageSalesService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
@@ -17,6 +18,7 @@ namespace garagesales.Services
             var request = httpContextAccessor.HttpContext!.Request;
             _httpClient.BaseAddress = new Uri($"{request.Scheme}://{request.Host}/");
         }
+        //Creates the query based on the parameters in the dto then calls the api
         public async Task<List<GarageSale>> GetGarageSales(SaleFilterDto dto)
         {
             var query = new Dictionary<string, string>();
@@ -35,18 +37,22 @@ namespace garagesales.Services
             var url = QueryHelpers.AddQueryString("api/GarageSales", query);
             return await _httpClient.GetFromJsonAsync<List<GarageSale>>(url) ?? new List<GarageSale>();
         }
+        //Gets filters, returning an empty model if none are found
         public async Task<FilterModel> GetFilters()
         {
             return await _httpClient.GetFromJsonAsync<FilterModel>("api/GarageSales/filters") ?? new FilterModel();
         }
+        //Gets a garage sale, retrning an empty garage sale if none are found
         public async Task<GarageSale> GetGarageSale(int id)
         {
             return await _httpClient.GetFromJsonAsync<GarageSale>($"api/GarageSales/{id}") ?? new GarageSale();
         }
+        //Gets sales related to the user, used for deleting sales when a user is deleted
         public async Task<List<GarageSale>> GetUserGarageSales(string id)
         {
             return await _httpClient.GetFromJsonAsync<List<GarageSale>>($"api/GarageSales/User/{id}") ?? new List<GarageSale>();
         }
+        //Creates a new garage sale and returns the Id for redirecting to that sale's page.
         public async Task<int> CreateGarageSale(GarageSaleDto dto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/GarageSales", dto);
@@ -54,23 +60,19 @@ namespace garagesales.Services
             var sale = await response.Content.ReadFromJsonAsync<GarageSale>();
             return sale.Id;
         }
-
+        //Deletes the garage sale
         public async Task DeleteGarageSale(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/GarageSales/{id}");
             response.EnsureSuccessStatusCode();
         }
-
-        //Might not be used, delete?
-        public async Task<List<GarageSaleItem>> GetGarageSaleItems(int id)
-        {
-            return await _httpClient.GetFromJsonAsync<List<GarageSaleItem>>($"api/GarageSaleItems/{id}") ?? new List<GarageSaleItem>();
-        }
+        //Creates a garage sale item
         public async Task CreateGarageSaleItem(GarageSaleItemDto dto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/GarageSaleItems", dto);
             response.EnsureSuccessStatusCode();
         }
+        //Deletes a garage sale item
         public async Task DeleteGarageSaleItem(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/GarageSaleItems/{id}");

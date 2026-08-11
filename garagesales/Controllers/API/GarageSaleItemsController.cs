@@ -19,12 +19,14 @@ namespace garagesales.Controllers.API
         }
 
         [HttpGet]
+        //Gets Garage Sale Items based on id
         public async Task<IActionResult> GetGarageSaleItems(int id) 
         {
             var items = await _dbContext.GarageSaleItems.Where(x => x.GarageSaleId == id).ToListAsync();
             return Ok(items);
         }
         [HttpPost]
+        //Creates a new Garage Sale Item
         public  IActionResult CreateGarageSaleItem(GarageSaleItemDto dto)
         {
             var item = new GarageSaleItem
@@ -39,6 +41,7 @@ namespace garagesales.Controllers.API
             return Ok();
         }
         [HttpDelete("{id}")]
+        //Deletes a Garage Sale Item
         public IActionResult DeleteGarageSaleItem(int id)
         {
             var item = _dbContext.GarageSaleItems.Find(id);
