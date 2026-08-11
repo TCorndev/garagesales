@@ -21,6 +21,10 @@ namespace garagesales.Services
         {
             return await _httpClient.GetFromJsonAsync<GarageSale>($"api/GarageSales/{id}") ?? new GarageSale();
         }
+        public async Task<List<GarageSale>> GetUserGarageSales(string id)
+        {
+            return await _httpClient.GetFromJsonAsync<List<GarageSale>>($"api/GarageSales/User/{id}") ?? new List<GarageSale>();
+        }
         public async Task<int> CreateGarageSale(GarageSaleDto dto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/GarageSales", dto);

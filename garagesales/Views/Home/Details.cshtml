@@ -117,7 +117,6 @@
 </div>
 <script>
     function addItem(saleid){
-        console.log(saleid)
         $.get("/Home/AddItem", {saleid: saleid}, 
         function (html) {
             $("#inventory").html(html)

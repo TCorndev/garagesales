@@ -16,6 +16,7 @@ builder.Services.AddHttpClient<LoginService>(client => client.BaseAddress = new 
 builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<Database1Context>().AddSignInManager();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Login";

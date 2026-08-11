@@ -44,7 +44,7 @@ namespace garagesales.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateUser(UserDto dto)
+        public async Task<IActionResult> CreateUser(CreateUserDto dto)
         {
             if (!ModelState.IsValid)
             {

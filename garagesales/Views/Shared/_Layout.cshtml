@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -28,6 +29,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Create" asp-action="Index">Create Garage Sale</a>
                         </li>
+                        }
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Admin">Admin Page</a>
+                            </li>
                         }
                         @if (User.Identity?.IsAuthenticated == true)
                         {   

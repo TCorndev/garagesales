@@ -1,8 +1,10 @@
 ﻿using garagesales.Models.dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace garagesales.Controllers.API
 {
@@ -17,6 +19,23 @@ namespace garagesales.Controllers.API
         {
             _userManager = userManager;
             _signInManager = signInManager;
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var userlist = await _userManager.Users.ToListAsync();
+            var dtolist = new List<UserDto>();
+            foreach(var user in userlist)
+            {
+                dtolist.Add(new UserDto
+                {
+                    Id = user.Id,
+                    Name = user.UserName,
+                    Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()
+                });
+            }
+            return Ok(dtolist);
         }
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto dto)
@@ -45,7 +64,7 @@ namespace garagesales.Controllers.API
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser(UserDto dto)
+        public async Task<IActionResult> RegisterUser(CreateUserDto dto)
         {
             var newuser = new IdentityUser();
             newuser.UserName = dto.Username;
@@ -56,5 +75,35 @@ namespace garagesales.Controllers.API
             await _userManager.AddToRoleAsync(newuser, "User");
             return Ok();
         }
+        [Authorize(Roles = "Admin")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UserDto dto)
+        {
+            string removedrole = "User";
+            if (dto.Role == "User")
+            {
+                removedrole = "Admin";
+            }
+            var user = await _userManager.FindByIdAsync(dto.Id);
+            if (user == null) {
+                return BadRequest();
+            }
+            await _userManager.AddToRoleAsync(user, dto.Role);
+            await _userManager.RemoveFromRoleAsync(user, removedrole);
+            return Ok();
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            await _userManager.DeleteAsync(user);
+            return Ok();
+        }
+        
     }
 }

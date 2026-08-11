@@ -37,6 +37,12 @@ namespace garagesales.Controllers.API
             }
             return Ok(sale);
         }
+        [HttpGet("User/{id}")]
+        public IActionResult GetGarageSale(string id)
+        {
+            var sales = _dbContext.GarageSales.Where(x => x.UserId == id).ToList();
+            return Ok(sales);
+        }
         [HttpPost]
         public IActionResult AddGarageSale(GarageSaleDto dto)
         {
